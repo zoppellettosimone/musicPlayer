@@ -2,53 +2,57 @@ import random
 import os
 from pygame import mixer
 import time
+from datetime import datetime
       
 def Play():
     try:
         mixer.music.load(song)
         mixer.music.play()
-        print(f"\nPlaying {listDir[r].lower()}")
+        print(f"\n[{datetime.now()}] Playing {listDir[r].lower()}")
     except:
-        print("Error loading a song randomly")
+        print(f"\n[{datetime.now()}] Error loading a song randomly")
 
 def PlayName(nameSong):
     try:
         mixer.music.load(link+"\\"+nameSong)
         mixer.music.play()
-        print(f"Playing {nameSong.lower()}")
+        print(f"\n[{datetime.now()}] Playing {nameSong.lower()}")
     except:
-        print("Error loading a specified song, please check its presence")
+        print(f"\n[{datetime.now()}] Error loading a specified song, please check its presence")
 
 def Pause():
     try:
         mixer.music.pause()
+        print(f"\n[{datetime.now()}] Pause")
     except:
-        print("Error while pausing a song")
+        print(f"\n[{datetime.now()}] Error while pausing a song")
 
 def Stop():
     try:
         mixer.music.stop()
+        print(f"\n[{datetime.now()}] Stop")
     except:
-        print("Error in stopping a song")
+        print(f"\n[{datetime.now()}] Error in stopping a song")
 
 def Resume():
     try:
         mixer.music.unpause()
+        print(f"\n[{datetime.now()}] Resume")
     except:
-        print("Error resuming a song")
+        print(f"\n[{datetime.now()}] Error resuming a song")
 
 def LoadDir():
-    linkInput = input("\nWhich folder are the songs in? ")
+    linkInput = input(f"\n[{datetime.now()}] Which folder are the songs in? ")
 
     try:
         os.chdir(linkInput)
 
         return linkInput
     except:
-        print("Error in loading the folder, check its existence and its path")
+        print(f"\n[{datetime.now()}] Error in loading the folder, check its existence and its path")
         return LoadDir()
 
-print('''
+print(f'''
 
     MP3 Music Player by Console
     Written by Simone Zoppelletto
@@ -64,8 +68,7 @@ r = random.randint(0, len(listDir)-1)
 
 song=f'{link}\\{listDir[r]}'
 
-print(song)
-print(f"Playing {listDir[r]}")
+print(f"\n[{datetime.now()}] {song}")
 
 Play()
 
@@ -73,35 +76,36 @@ inputUser = ""
 lastAction = "Play"
 
 while(inputUser.lower() != "Exit"):
-    print('''
+    print(f'''
             Write "Exit" to Exit
             Write "Stop" to stop the song
             Write "Resume" to resume a blocked song
             Write "Pause" to stop a song
             Write "Load" to load one randomly
+            Write "cd directoryCompletePath" to change directory in a new directoryCompletePath
             Write the exact name of the song if you want to upload a specific one (ending with .mp3)
         ''')
 
-    inputUser = input("What do you want to do? ")
+    inputUser = input(f"\n[{datetime.now()}] What do you want to do? ")
 
     if(inputUser.lower() == "stop"):
         if(lastAction == "Resume" or lastAction == "Play"):
             Stop()
             lastAction = "Stop"
         else:
-            print("It is not possible to stop the song")
+            print(f"\n[{datetime.now()}] It is not possible to stop the song")
     elif(inputUser.lower() == "resume"):
         if(lastAction == "Stop" or lastAction == "Pause"):
             Resume()
             lastAction = "Resume"
         else:
-            print("The song cannot be resumed")
+            print(f"\n[{datetime.now()}] The song cannot be resumed")
     elif(inputUser.lower() == "pause"):
         if(lastAction == "Resume" or lastAction == "Play"):
             Pause()
             lastAction = "Pause"
         else:
-            print("The song cannot be paused")
+            print(f"\n[{datetime.now()}] The song cannot be paused")
     elif(inputUser.lower() == "load" or inputUser.replace(' ','') == ""):
         
         listDir = os.listdir()
@@ -115,16 +119,34 @@ while(inputUser.lower() != "Exit"):
 
         lastAction = "Play"
     elif(inputUser.lower() == "Exit"):
-        print("Thanks")
+        print(f"\n[{datetime.now()}] Thanks")
     elif(inputUser.lower().endswith(".mp3")):
         PlayName(inputUser)
 
         lastAction = "Play"
+    elif(inputUser.startswith("cd ")):
+        newFolder = inputUser.lower()[3:]
+        
+        try:
+            os.chdir(newFolder)
+            print(f"\n[{datetime.now()}] Directory Changed")
+
+            link = newFolder
+            listDir = os.listdir()
+
+            r = random.randint(0, len(listDir)-1)
+            song=f'{link}\\{listDir[r]}'
+
+            Stop()
+            Play()
+        except:
+            print(f"Error with {newFolder}")
+    
     else:
-        print("Invalid Input: " + inputUser)
+        print(f"\n[{datetime.now()}] Invalid Input: " + inputUser)
         if(inputUser.lower() == "play"):
-            print("Do you mean Load?")
+            print(f"\n[{datetime.now()}] Do you mean Load?")
 
 
 
-print("Music End")
+print(f"\n[{datetime.now()}] Music End")
